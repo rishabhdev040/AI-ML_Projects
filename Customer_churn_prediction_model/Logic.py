@@ -3,6 +3,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.preprocessing import StandardScaler
+
 
 #csv def
 df = pd.read_csv("churningdata.csv")
@@ -37,9 +39,15 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
 
+   # Adding the scaler standard (Enhancement)
+scaler = StandardScaler()
+
+   # scale only the numeric columns (Enhancement)
+X_train[num_cols] = scaler.fit_transform(X_train[num_cols])
+X_test[num_cols] = scaler.transform(X_test[num_cols])
 
 # training model with the data from X and Y
-model = LogisticRegression(max_iter=1000 )  
+model = LogisticRegression(max_iter=1000,class_weight= "balanced")#added a class weight for balancing the churn detection so that the model can not skip the rep and also balancet the churn of all entity.  
 model.fit(X_train, y_train)
 
 # Evaluate
